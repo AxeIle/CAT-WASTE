@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 String activeContent = 'hello';
 int _currentSelectedIndex = 0;
-final _pages = [UserHome(), UserSchedule(), UserReport(), UserProfile()];
+final _pages = [UserHome(), UserSchedule(), UserReport(), UserProfile(),];
 
 class ScreenHome extends StatefulWidget {
   @override

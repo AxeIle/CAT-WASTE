@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:login/authentication/module_choice.dart';
-//import 'package:login/authentication/signIn/login.dart';
-//import 'package:login/user/user_main.dart';
-//import 'package:login/user/user_main.dart';
-//import 'package:login/login/signUp.dart';
+import 'package:login/authentication/signIn/login.dart';
+import 'package:login/user/user_home/user_home.dart';
+import 'package:login/user/user_main.dart';
+//import 'package:login/test_c.dart';
 
 //creating a splash screen that displays for few seconds while app is opening and then redirecting to the login page,currently delaying a few minutes.
 class ScreenSplash extends StatefulWidget {
@@ -46,7 +45,7 @@ class _ScreenSplashState extends State<ScreenSplash> {
     await Future.delayed(Duration(seconds: 5));
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (ctx) => ModuleChoice(),
+        builder: (ctx) => SignInScreen(),
       ),
     );
   }

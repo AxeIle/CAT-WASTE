@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:login/user/user_schedule/u_s_newaddress.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:login/user/user_schedule/booking/booking_schedule.dart';
+import 'package:login/user/user_schedule/new_address/u_s_newaddress.dart';
+import 'package:login/user/user_schedule/schedule_save/schedule_save.dart';
 
 class UserSchedule extends StatefulWidget {
-  const UserSchedule({super.key});
+  const UserSchedule({Key? key}) : super(key: key);
 
   @override
   _UserScheduleState createState() => _UserScheduleState();
@@ -10,79 +14,127 @@ class UserSchedule extends StatefulWidget {
 
 class _UserScheduleState extends State<UserSchedule> {
   List<String> selectedCategories = [];
+  User? _user;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  bool loadData = false;
+  Map<String, dynamic>? addressItem;
+  Stream<DocumentSnapshot>? _addressDataStream;
+  Stream<QuerySnapshot>? _addressCollection;
+  String? _address;
+  String? _pincode;
+  String? _landmark;
+  int? _selectedIndex;
+
+  void initState() {
+    super.initState();
+
+    // Listen for changes in user authentication state
+    _auth.authStateChanges().listen((user) {
+      setState(() {
+        _user = user;
+      });
+
+      if (user != null) {
+        loadData = true;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          TextButton(
-            onPressed: () {
-              // Handle adding new address
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => NewAddressForm()));
-            },
-            child: Text('Add new Address'),
+          Expanded(
+            child: LoadUserData(
+              user: _user,
+              setSelectedIndex: setSelectedIndex,
+              setAddressItem: setAddressItem,
+            ),
+          ),
+          Align(
+            alignment: Alignment.topLeft,
+            child: TextButton(
+              onPressed: () {
+                // Handle adding new address
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => NewAddressForm()),
+                );
+              },
+              child: Text(
+                '+ Add new Address',
+              ),
+            ),
           ),
           SizedBox(height: 16.0),
-          Text('Choose Waste Categories:'),
-          CheckboxListTile(
-            title: Text('Bio Waste'),
-            value: selectedCategories.contains('Bio Waste'),
-            onChanged: (value) {
-              setState(() {
-                if (value != null && value) {
-                  selectedCategories.add('Bio Waste');
-                } else {
-                  selectedCategories.remove('Bio Waste');
-                }
-              });
-            },
+          Column(
+            children: [
+              Text('Choose Waste Categories:'),
+              _buildCategoryIconSelection(Icons.grass, 'Bio Waste'),
+              _buildCategoryIconSelection(Icons.local_bar, 'Plastic'),
+              _buildCategoryIconSelection(Icons.eco, 'Degradable'),
+              _buildCategoryIconSelection(Icons.dangerous, 'Hazardous'),
+            ],
           ),
-          CheckboxListTile(
-            title: Text('Plastic'),
-            value: selectedCategories.contains('Plastic'),
-            onChanged: (value) {
-              setState(() {
-                if (value != null && value) {
-                  selectedCategories.add('Plastic');
-                } else {
-                  selectedCategories.remove('Plastic');
-                }
-              });
+          SizedBox(
+              height:
+                  16.0), // Add spacing between the categories and the Submit button
+          ElevatedButton(
+            onPressed: () {
+              // Handle Submit action
+              // For example, you can print the selected categories
+              print(addressItem);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_)=> CategoryQuantity(),
+                ),
+              );
+              print(selectedCategories);
             },
+            child: Text('CONFIRM'),
           ),
-          CheckboxListTile(
-            title: Text('Degradable'),
-            value: selectedCategories.contains('Degradable'),
-            onChanged: (value) {
-              setState(() {
-                if (value != null && value) {
-                  selectedCategories.add('Degradable');
-                } else {
-                  selectedCategories.remove('Degradable');
-                }
-              });
-            },
-          ),
-          CheckboxListTile(
-            title: Text('Hazardous'),
-            value: selectedCategories.contains('Hazardous'),
-            onChanged: (value) {
-              setState(() {
-                if (value != null && value) {
-                  selectedCategories.add('Hazardous');
-                } else {
-                  selectedCategories.remove('Hazardous');
-                }
-              });
-            },
-          ),
-          // Add more CheckboxListTile widgets for additional categories
         ],
       ),
     );
+  }
+
+  Widget _buildCategoryIconSelection(IconData icon, String category) {
+    return Row(
+      children: [
+        IconButton(
+          icon: Icon(
+            icon,
+            color: selectedCategories.contains(category)
+                ? Colors.blue // Change color if selected
+                : Colors.grey, // Default color
+          ),
+          onPressed: () {
+            setState(() {
+              if (selectedCategories.contains(category)) {
+                selectedCategories.remove(category);
+              } else {
+                selectedCategories.add(category);
+              }
+            });
+          },
+        ),
+        Text(category),
+      ],
+    );
+  }
+
+  void setAddressItem(Map<String, dynamic>? item) {
+    addressItem = item;
+  }
+
+  void setSelectedIndex(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 }
