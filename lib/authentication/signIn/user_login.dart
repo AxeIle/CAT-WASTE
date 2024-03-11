@@ -5,6 +5,7 @@ import 'package:login/resueable/reuseable_widget.dart';
 //import 'package:login/user/user_main.dart';
 
 class SignInScreen extends StatefulWidget {
+
   const SignInScreen({super.key});
 
   @override
@@ -60,23 +61,21 @@ class LoginScreenState extends State<SignInScreen> {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title:const Text(
+          title: const Text(
             'Catalyzing Waste',
             style: TextStyle(
               color: Colors.white,
             ),
           ),
-          backgroundColor:const Color.fromARGB(255, 133, 86, 105),
+          backgroundColor: const Color.fromARGB(255, 133, 86, 105),
         ),
         body: Container(
-            color:const Color.fromARGB(255, 129, 89, 107),
+            color:  Color.fromARGB(255, 21, 24, 29),
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child: SingleChildScrollView(
@@ -89,8 +88,8 @@ class LoginScreenState extends State<SignInScreen> {
                         const SizedBox(
                           height: 30,
                         ),
-                        reusableTextField("Enter Email", Icons.person_outline,
-                            false, _emailController),
+                            reusableTextField("Enter Email",
+                                Icons.person_outline, false, _emailController),
                         const SizedBox(
                           height: 20,
                         ),
@@ -102,7 +101,7 @@ class LoginScreenState extends State<SignInScreen> {
                         handleForgotPassword(context),
                         firebaseUIButton(
                             context, "Sign In", () => signIn(_formKey)),
-                        navigateToSignUp("Sign Up",true,context),
+                        navigateToSignUp("Sign Up", true, context),
 
                         // forgetPassword(context),
                       ]),

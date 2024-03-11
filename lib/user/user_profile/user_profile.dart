@@ -53,11 +53,7 @@ class _ProfileSectionState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('User Profile'),
-      ),
-      body: SingleChildScrollView(
+    return SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -138,7 +134,6 @@ class _ProfileSectionState extends State<UserProfile> {
             SizedBox(height: 20),
           ],
         ),
-      ),
     );
   }
 

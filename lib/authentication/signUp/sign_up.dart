@@ -29,6 +29,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Color.fromARGB(255, 21, 24, 29),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.green[500],

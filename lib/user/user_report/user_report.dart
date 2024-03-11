@@ -3,35 +3,37 @@ import 'package:login/user/user_report/camera.dart';
 
 class UserReport extends StatefulWidget {
   @override
-  _ReportPageState createState() => _ReportPageState();
+  _UserReportState createState() => _UserReportState();
 }
 
-class _ReportPageState extends State<UserReport> {
+class _UserReportState extends State<UserReport> {
   List<String> _selectedWasteCollectionIssues = [];
   List<String> _selectedNeighbourhoodIssues = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Report'),
-      ),
+      backgroundColor: Color.fromARGB(255, 21, 24, 29),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              "Report",
+              style: TextStyle(color: Colors.white,fontSize: 24),
+            ),
             const SizedBox(height: 16),
             const Text(
               'Issues related to waste collection',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(color: Colors.white,fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             ..._getWasteCollectionIssues(),
             const SizedBox(height: 32),
             const Text(
               'Issues in the neighbourhood',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(color: Colors.white,fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             ..._getNeighbourhoodIssues(),
@@ -112,8 +114,22 @@ class _ReportPageState extends State<UserReport> {
         Checkbox(
           value: selectedIssues.contains(issue),
           onChanged: onChangeValue,
+          activeColor: Color.fromARGB(255, 42, 3, 150),
+          checkColor: Color.fromARGB(255, 255, 255, 255),
+          side: BorderSide(color: Colors.grey),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
-        Text(issue),
+        Expanded(
+          child: Text(
+            issue,
+            style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.normal,
+                color: Colors.white),
+            overflow: TextOverflow.visible,
+          ),
+        ),
       ],
     );
   }

@@ -15,11 +15,8 @@ class AuthServices {
       await userCredential.user!.updateDisplayName(name);
       print("After updateDisplayName: ${userCredential.user!.displayName}");
 
-// Store user data directly in the contributors collection
-      await FirestoreServices.saveContributor(
-          name, email, userCredential.user!.uid);
 
-// Initialize solidWaste and liquidWaste fields with zero
+// save user data
       await FirebaseFirestore.instance
           .collection('UserDB')
           .doc(userCredential.user!.uid)
@@ -31,8 +28,9 @@ class AuthServices {
         'Pincode': '',
       });
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Registration Successful')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Registration Successful'),
+          backgroundColor: Colors.deepPurple));
     } on FirebaseAuthException catch (e) {
       // Handle exceptions
       print(e.toString());
@@ -41,73 +39,78 @@ class AuthServices {
     }
   }
 
-  static signinUser(String email, String password, BuildContext context) async {
+  static signinUser(
+      String email, String password, BuildContext context) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
       // Check if the user account still exists
       if (userCredential.user != null) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('You are Logged in')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('You are Logged in'),
+            backgroundColor: Colors.deepPurple));
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (_) => ScreenHome()));
       }
     } on FirebaseAuthException catch (e) {
       // Handle exceptions (if needed)
       print(e.toString());
-      
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Invalid credentials')));
+
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Invalid credentials'),
+          backgroundColor: Colors.deepPurple));
     } catch (e) {
       // Handle other exceptions (if needed)
     }
   }
 }
 
-class AdminAuthServices {
-  static Future<UserCredential?> signupAdmin(
-      String email, String password, String name, BuildContext context) async {
+class OrgAuthServices {
+  late FirebaseAuth _auth;
+  late String _verificationId;
+
+ Future<void> verifyPhoneNumber(String phoneNumber) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-
-      print("Before updateDisplayName: ${userCredential.user!.displayName}");
-      await userCredential.user!.updateDisplayName(name);
-      print("After updateDisplayName: ${userCredential.user!.displayName}");
-
-      // Store user data directly in the admins collection (replace 'admins' with your collection name)
-      await FirebaseFirestore.instance
-          .collection('admins')
-          .doc(userCredential.user!.uid)
-          .set({
-        'name': name,
-        'email': email,
-        // Add other data if needed
-      });
-
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Registration Successful')));
-
-      return userCredential;
-    } on FirebaseAuthException catch (e) {
-      // Handle exceptions
-      print("Error creating admin account: $e");
-      return null;
+      await _auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          await _auth.signInWithCredential(credential);
+          print('User signed up successfully with phone number: $phoneNumber');
+          // Navigate to the next screen or perform any other action upon successful signup
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          print(
+              'Failed to sign up user with phone number: $phoneNumber. Error: ${e.message}');
+          // Handle the error as per your app's requirements
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          _verificationId = verificationId;
+          // Handle code sent (OTP) - You might want to navigate to OTP verification screen
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          // Handle timeout
+        },
+      );
     } catch (e) {
-      // Handle other exceptions
-      print("Other error creating admin account: $e");
-      return null;
+      print('Error signing up user with phone number: $phoneNumber. Error: $e');
+      // Handle the error as per your app's requirements
     }
   }
-}
 
-class FirestoreServices {
-  static saveContributor(String name, String email, String uid) async {
-    await FirebaseFirestore.instance
-        .collection('UserDB')
-        .doc(uid)
-        .set({'email': email, 'name': name});
+  Future<void> signInWithPhoneNumber(String smsCode) async {
+    try {
+      final credential = PhoneAuthProvider.credential(
+        verificationId: _verificationId,
+        smsCode: smsCode,
+      );
+      await _auth.signInWithCredential(credential);
+      print('User signed up successfully with OTP');
+      // Navigate to the next screen or perform any other action upon successful signup
+    } catch (e) {
+      print('Failed to sign up user with OTP. Error: $e');
+      // Handle the error as per your app's requirements
+    }
   }
 }
 

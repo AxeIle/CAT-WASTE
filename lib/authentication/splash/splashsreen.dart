@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:login/authentication/signIn/login.dart';
+import 'package:login/authentication/module_choice/module_choice.dart';
+import 'package:login/authentication/signIn/user_login.dart';
 import 'package:login/user/user_home/user_home.dart';
 import 'package:login/user/user_main.dart';
 //import 'package:login/test_c.dart';
@@ -27,10 +28,12 @@ class _ScreenSplashState extends State<ScreenSplash> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Image.asset(
-        "assets/images/splash/logo.png",
-        fit: BoxFit.fill,
+    return SafeArea(
+      child: Container(
+        child: Image.asset(
+          "assets/images/splash/logo.png",
+          fit: BoxFit.fill,
+        ),
       ),
     );
   }
@@ -45,7 +48,7 @@ class _ScreenSplashState extends State<ScreenSplash> {
     await Future.delayed(Duration(seconds: 5));
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (ctx) => SignInScreen(),
+        builder: (ctx) => ModuleChoice(),
       ),
     );
   }

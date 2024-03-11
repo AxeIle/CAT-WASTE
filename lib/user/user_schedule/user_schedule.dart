@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:login/user/user_schedule/booking/booking_schedule.dart';
+import 'package:login/user/user_schedule/booking/category_quantity.dart';
 import 'package:login/user/user_schedule/new_address/u_s_newaddress.dart';
-import 'package:login/user/user_schedule/schedule_save/schedule_save.dart';
+import 'package:login/user/user_schedule/load_data/load_data.dart';
 
 class UserSchedule extends StatefulWidget {
   const UserSchedule({Key? key}) : super(key: key);
@@ -16,14 +16,8 @@ class _UserScheduleState extends State<UserSchedule> {
   List<String> selectedCategories = [];
   User? _user;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool loadData = false;
-  Map<String, dynamic>? addressItem;
-  Stream<DocumentSnapshot>? _addressDataStream;
-  Stream<QuerySnapshot>? _addressCollection;
-  String? _address;
-  String? _pincode;
-  String? _landmark;
+  Map<String, dynamic> addressItem = {};
   int? _selectedIndex;
 
   void initState() {
@@ -44,10 +38,22 @@ class _UserScheduleState extends State<UserSchedule> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 21, 24, 29),
+      appBar: AppBar(title: Text("Select Schedule")),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          SizedBox(
+            height: 20,
+          ),
+          Text(
+            "Please Select an Address",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+            ),
+          ),
           Expanded(
             child: LoadUserData(
               user: _user,
@@ -62,7 +68,7 @@ class _UserScheduleState extends State<UserSchedule> {
                 // Handle adding new address
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => NewAddressForm()),
+                  MaterialPageRoute(builder: (ctx1) => NewAddressForm()),
                 );
               },
               child: Text(
@@ -73,7 +79,10 @@ class _UserScheduleState extends State<UserSchedule> {
           SizedBox(height: 16.0),
           Column(
             children: [
-              Text('Choose Waste Categories:'),
+              Text(
+                'Choose Waste Categories:',
+                style: TextStyle(color: white(), fontSize: 20),
+              ),
               _buildCategoryIconSelection(Icons.grass, 'Bio Waste'),
               _buildCategoryIconSelection(Icons.local_bar, 'Plastic'),
               _buildCategoryIconSelection(Icons.eco, 'Degradable'),
@@ -88,13 +97,22 @@ class _UserScheduleState extends State<UserSchedule> {
               // Handle Submit action
               // For example, you can print the selected categories
               print(addressItem);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_)=> CategoryQuantity(),
-                ),
-              );
-              print(selectedCategories);
+              if (addressItem.isNotEmpty && selectedCategories.isNotEmpty) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        CategoryQuantity(selectedCategories, addressItem),
+                  ),
+                );
+                print(selectedCategories);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Please Select an address and a waste category',
+                    ),
+                    backgroundColor: Colors.deepPurple));
+              }
             },
             child: Text('CONFIRM'),
           ),
@@ -110,7 +128,7 @@ class _UserScheduleState extends State<UserSchedule> {
           icon: Icon(
             icon,
             color: selectedCategories.contains(category)
-                ? Colors.blue // Change color if selected
+                ? Colors.deepPurple // Change color if selected
                 : Colors.grey, // Default color
           ),
           onPressed: () {
@@ -123,12 +141,15 @@ class _UserScheduleState extends State<UserSchedule> {
             });
           },
         ),
-        Text(category),
+        Text(
+          category,
+          style: TextStyle(color: white()),
+        ),
       ],
     );
   }
 
-  void setAddressItem(Map<String, dynamic>? item) {
+  void setAddressItem(Map<String, dynamic> item) {
     addressItem = item;
   }
 
@@ -137,4 +158,8 @@ class _UserScheduleState extends State<UserSchedule> {
       _selectedIndex = index;
     });
   }
+}
+
+Color white() {
+  return Colors.white;
 }

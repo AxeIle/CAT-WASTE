@@ -2,10 +2,11 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:login/firebase_options.dart';
-import 'package:login/authentication/signIn/login.dart';
+import 'package:login/authentication/signIn/user_login.dart';
 import 'package:login/authentication/signUp/sign_up.dart';
 import 'package:login/authentication/splash/splashsreen.dart';
-import 'package:login/user/user_main.dart'; // Import your sign-up screen file
+// import 'package:login/organisation/org_profile/org_profile.dart';
+import 'package:login/user/user_main.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +14,9 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await FirebaseAppCheck.instance.activate();
-  runApp(MyApp());
+  runApp(
+    MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {

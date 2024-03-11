@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:login/user/user_schedule/booking/date_schedule.dart';
 
 class CategoryQuantity extends StatefulWidget {
+  final Map<String, dynamic>? addressItem;
+  final List<String> selectedCategories;
+  const CategoryQuantity(this.selectedCategories, this.addressItem, {Key? key});
+
   @override
   _WasteTypesScreenState createState() => _WasteTypesScreenState();
 }
@@ -66,38 +71,50 @@ class _WasteTypesScreenState extends State<CategoryQuantity> {
         itemCount: wasteMap.length,
         itemBuilder: (context, index) {
           String key = wasteMap.keys.elementAt(index);
+          List<String> selKey = widget.selectedCategories;
           List<String> values = wasteMap[key]!;
-          return ListTile(
-            title: Text(
-              key,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: values.map((value) {
-                return Row(
-                  children: [
-                    Checkbox(
-                      value: selectedWasteItems.containsKey(key)
-                          ? selectedWasteItems[key]!.contains(value)
-                          : false,
-                      onChanged: (isChecked) {
-                        updateSelectedWasteItems(key, value, isChecked!);
-                      },
-                    ),
-                    Text(value),
-                  ],
-                );
-              }).toList(),
-            ),
-          );
+          if (selKey.contains(key)) {
+            return ListTile(
+              title: Text(
+                key,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: values.map((value) {
+                  return Row(
+                    children: [
+                      Checkbox(
+                        value: selectedWasteItems.containsKey(key)
+                            ? selectedWasteItems[key]!.contains(value)
+                            : false,
+                        onChanged: (isChecked) {
+                          updateSelectedWasteItems(key, value, isChecked!);
+                        },
+                      ),
+                      Text(value),
+                    ],
+                  );
+                }).toList(),
+              ),
+            );
+          } else {
+            return SizedBox.shrink(); // Return an empty widget if category not selected
+          }
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           print(selectedWasteItems);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) =>
+                  DatePickerPage(selectedCategories: selectedWasteItems,addressItem: widget.addressItem),
+            ),
+          );
         },
-        child: Icon(Icons.check),
+        child: const Icon(Icons.check),
       ),
     );
   }

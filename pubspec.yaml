@@ -46,6 +46,9 @@ dependencies:
   intl: ^0.17.0
   firebase_storage: ^11.6.5
   firebase_app_check: ^0.2.1+13
+  provider: ^5.0.0
+  libphonenumber: ^2.0.2
+  barcode_scan: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +77,10 @@ flutter:
   - assets/images/splash/logo.png
   - assets/images/mod_choice/team.png
   - assets/images/mod_choice/corporation.png
+  - assets/images/home/home.png
+  - assets/images/home/home1.png
+  - assets/images/home/home2.png
+  - assets/images/logo/logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

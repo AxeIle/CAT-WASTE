@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:login/authentication/signIn/login.dart";
+import 'package:login/authentication/signIn/user_login.dart';
 import "package:login/authentication/signUp/sign_up.dart";
 //import "package:helo/user/user_main.dart";
 //import "package:helo/login/signUp.dart";
@@ -56,7 +56,47 @@ TextFormField reusableTextField(
 // OutlineInputBorder
   );
 }
+Row reusablePhoneField(
+  String text,
+  TextEditingController controller,
+) {
+  return Row(
+    children: [
+      TextFormField(
+        controller: controller,
+        cursorColor: Colors.white,
+        style: TextStyle(color: Colors.white.withOpacity(0.9)),
+        decoration: InputDecoration(
+          prefixIcon: Icon(
+            Icons.phone,
+            color: Colors.white70,
+          ), // Icon
+          labelText: text,
+          labelStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
+          filled: true,
+          floatingLabelBehavior: FloatingLabelBehavior.never,
+          fillColor: Colors.white.withOpacity(0.3),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30.0),
+              borderSide: const BorderSide(width: 0, style: BorderStyle.none)),
+        ), // InputDecoration
+        keyboardType:TextInputType.phone ,
+        validator: (value) {
+                if (value!.length < 10) {
+                  return 'Please Enter a valid number';
+                } else {
+                  return null;
+                }
+              }
+      
+      // TextField
+      
+      // OutlineInputBorder
+      ),
 
+    ],
+  );
+}
 TextFormField reusableAddressField(String text, bool isMul, bool isEmail,
     TextEditingController controller, // Pass controller for the text field
     {bool isPhone = false}) {
@@ -175,7 +215,7 @@ Row navigateToSignUp(String val, bool isSignUp, BuildContext context) {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const SignInScreen()));
+                        builder: (context) => SignInScreen()));
               },
         child: Text(
           val,

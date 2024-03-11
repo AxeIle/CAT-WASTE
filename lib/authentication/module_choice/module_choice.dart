@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:login/authentication/signIn/login.dart';
+import 'package:login/authentication/signIn/org_login.dart';
+import 'package:login/authentication/signIn/user_login.dart';
+import 'package:login/organisation/main_org.dart';
+import 'package:login/user/user_main.dart';
 
 class ModuleChoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Color.fromARGB(255, 74, 2, 71),
+        backgroundColor: Color.fromARGB(255, 21, 24, 29),
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(60),
           child: AppBar(
@@ -41,7 +44,7 @@ class ModuleChoice extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SignInScreen()),
+                  MaterialPageRoute(builder: (context) => const SignInScreen()),
                 );
               },
               child: Container(
@@ -69,8 +72,7 @@ class ModuleChoice extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => DetailPage('Image 2')),
+                  MaterialPageRoute(builder: (context) => OrgLoginScreen()),
                 );
               },
               child: Container(
